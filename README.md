@@ -9,3 +9,7 @@ generate a KML from the trip data in the SMI to identify the route taken, and th
 
 Standalone executable generated using: `pyinstaller -F --icon=sedan.ico smi-parser.py`
 Icon for standalone executable sourced from [here](https://www.flaticon.com/free-icon/sedan_2736906).
+
+# Usage
+`smi-parser.exe -i <smi_file>`  
+`smi-parser.py -i <smi_file>`  
