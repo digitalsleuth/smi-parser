@@ -10,9 +10,11 @@ import base64
 import argparse
 import sys
 from datetime import datetime as dt
+import os
 import simplekml
 
-__version__ = '0.0.1'
+__version__ = '1.0.0'
+__date__ = '2023-03-02'
 __author__ = 'Corey Forman @digitalsleuth'
 
 
@@ -51,6 +53,9 @@ def generate_kml(filename, coordinates, all_data):
     trip.stylemap.highlightstyle.balloonstyle.text = trip_times
     trip.stylemap.highlightstyle.balloonstyle.bgcolor = simplekml.Color.white
     trip.stylemap.highlightstyle.balloonstyle.textcolor = simplekml.Color.black
+    trip.description = ''
+    for coord in coordinates:
+        trip.description += f'{coord[0]},{coord[1]}\n'
     trip.coords = coordinates
     start_point = kml.newpoint(name=f'Start - {start_time}')
     start_point.coords = [coordinates[0]]
@@ -91,7 +96,9 @@ def parse_smi(smi_input):
                 smi_output.write(line)
         print(f'Output saved as {output}. Generating KML data...')
         generate_kml(smi_input, coords, all_data)
-    except FileNotFoundError as err:
+        smi_output.close()
+        os.remove(output)
+    except FileNotFoundError:
         print(f'Filename {smi_input} does not exist - check your file/path and try again')
 
 def main():
