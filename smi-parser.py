@@ -13,8 +13,8 @@ from datetime import datetime as dt
 import os
 import simplekml
 
-__version__ = '1.0.0'
-__date__ = '2023-03-02'
+__version__ = '1.1.0'
+__date__ = '2023-03-04'
 __author__ = 'Corey Forman @digitalsleuth'
 
 
@@ -49,13 +49,13 @@ def generate_kml(filename, coordinates, all_data):
     start_time = dt.utcfromtimestamp(int(all_data[0][0]) / 1000).strftime('%Y-%m-%d %H:%M:%S UTC')
     end_time = dt.utcfromtimestamp(int(all_data[-1][0]) / 1000).strftime('%Y-%m-%d %H:%M:%S UTC')
 
-    trip_times = f'{filename}\nTrip starts at {start_time}\nTrip ends at {end_time}'
+    trip_times = f'{filename}\n\t\t\tTrip starts at {start_time}\n\t\t\tTrip ends at {end_time}'
     trip.stylemap.highlightstyle.balloonstyle.text = trip_times
     trip.stylemap.highlightstyle.balloonstyle.bgcolor = simplekml.Color.white
     trip.stylemap.highlightstyle.balloonstyle.textcolor = simplekml.Color.black
     trip.description = ''
     for coord in coordinates:
-        trip.description += f'{coord[0]},{coord[1]}\n'
+        trip.description += f'\t\t\t{coord[0]},{coord[1]},{coord[2]},{coord[3]} km/h\n'
     trip.coords = coordinates
     start_point = kml.newpoint(name=f'Start - {start_time}')
     start_point.coords = [coordinates[0]]
@@ -87,7 +87,7 @@ def parse_smi(smi_input):
                     decoded_data += (base64.b64decode(section).decode() + '')
                 for value in decoded_data.split(';'):
                     values.append(value)
-                coords.append((values[5], values[4]))
+                coords.append((values[5], values[4], values[6], values[8]))
                 all_data.append(values)
                 decoded_line = line.replace(line, (f'\t<P Class=ENCC >{values[4]} {values[5]}\n'))
                 smi_output.write(f'\t<P Class=ENCC ><!--{decoded_data} -->\n')
